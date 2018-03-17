@@ -5,7 +5,11 @@
 
 
 extern crate embedded_hal as hal;
+extern crate cast;
+
 use hal::blocking::i2c::{Write, WriteRead};
+use core::mem;
+use cast::*;
 
 pub const ADDRESS: u8 = 0x4c;
 
@@ -57,26 +61,28 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
     pub fn new(i2c: I2C) -> Result<Self, E>{
         let mut mma7660fc = Mma7660fc { i2c };
 
+        Ok(mma7660fc)
+
     }
 
     /// write to register
     pub fn write_register(&mut self,reg:Register,data:u8)->Result<(), E>{
-        self.i2c.write(ADDRESS,&[reg.addr(),data]);
+        self.i2c.write(ADDRESS,&[reg.addr(),data])
     }
 
     /// set mode
 
-    pub fn setMode(&mut self, mode:Mode){
-        self.write_register(Register::MODE,mode);
+    pub fn set_mode(&mut self, mode:Mode){
+        self.write_register(Register::MODE,mode.bits());
     }
 
     /// get x
-    pub fn getX(&mut self) -> Result<i8,E>{
-        let mut buffer: [u8];
+    pub fn get_x(&mut self) -> Result<u8,E>{
+        let mut buffer: [u8; 1] = unsafe { mem::uninitialized() };
 
-        self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],buffer)?;
+        self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],& mut buffer)?;
 
-        Ok((buffer) as i8);
+        Ok(buffer as u8)
 
 
     }
