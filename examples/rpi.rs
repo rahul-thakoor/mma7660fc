@@ -9,10 +9,13 @@ use mma7660fc::*;
 
 fn main(){
     let dev = I2cdev::new("/dev/i2c-1").unwrap();
-    let mut acc = Mma7660fc::new(dev).unwrap();
 
-    loop {
-        let result = acc.get_x().unwrap();
-        println!(result as char);
+    let mut  acc = Mma7660fc::new(dev).unwrap();
+
+    loop{
+        let mut res = acc.i2c.read(ADDRESS,0x00);
     }
+
+
+
 }

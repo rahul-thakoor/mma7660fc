@@ -54,7 +54,7 @@ impl Mode {
 
 /// MMA7660FC Driver
 pub struct Mma7660fc<I2C> {
-    i2c: I2C,
+    pub i2c: I2C
 }
 
 impl <I2C, E> Mma7660fc <I2C>
@@ -66,7 +66,7 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
         let mut mma7660fc = Mma7660fc { i2c };
 
 
-        mma7660fc.set_mode(Mode::ACTIVE)?;
+        mma7660fc.i2c.write(ADDRESS,0x0701);
 
 
         Ok(mma7660fc)
