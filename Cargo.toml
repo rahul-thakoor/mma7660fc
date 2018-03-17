@@ -6,5 +6,6 @@ authors = ["Rahul Thakoor <rahul.thakoor@gmail.com>"]
 [dependencies]
 embedded-hal = "0.1.0"
 linux-embedded-hal = "0.1.1"
+cast="*"
 
 [dev-dependencies]

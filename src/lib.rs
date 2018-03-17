@@ -1,19 +1,20 @@
-#![deny(missing_docs)]
+
 #![deny(warnings)]
 #![feature(unsize)]
 #![no_std]
-
 
 extern crate embedded_hal as hal;
 extern crate cast;
 
 use hal::blocking::i2c::{Write, WriteRead};
 use core::mem;
-use cast::*;
+
 
 pub const ADDRESS: u8 = 0x4c;
 
-enum  Register {
+#[allow(dead_code)]
+#[derive(Copy, Clone)]
+pub enum  Register {
     XOUT = 0x00,
     YOUT = 0x01,
     ZOUT = 0x02,
@@ -25,27 +26,30 @@ enum  Register {
     SR = 0x08,
     PDET = 0x09,
     PD = 0x0A
-
-
-
 }
 
-enum Mode {
+
+impl Register {
+    /// Get register address.
+    fn addr(&self) -> u8 {
+        *self as u8
+    }
+}
+
+#[allow(dead_code)]
+#[derive(Copy, Clone)]
+pub enum Mode {
     STANDBY = 0x00,
     ACTIVE =0x01
 }
 
 impl Mode {
-    pub fn bits(&self) -> u8 {
+    /// Get bits
+    fn bits(&self) -> u8 {
         *self as u8
     }
 }
 
-impl Register {
-    pub fn addr(&self) -> u8 {
-        *self as u8
-    }
-}
 
 
 /// MMA7660FC Driver
@@ -58,8 +62,12 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
 {
     /// Creates a new driver from a I2C peripheral
-    pub fn new(i2c: I2C) -> Result<Self, E>{
+    pub fn new(i2c: I2C) -> Result<Self, E> {
         let mut mma7660fc = Mma7660fc { i2c };
+
+
+        mma7660fc.set_mode(Mode::ACTIVE)?;
+
 
         Ok(mma7660fc)
 
@@ -72,8 +80,8 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
     /// set mode
 
-    pub fn set_mode(&mut self, mode:Mode){
-        self.write_register(Register::MODE,mode.bits());
+    pub fn set_mode(&mut self, mode:Mode) -> Result<(), E>{
+        self.write_register(Register::MODE,mode.bits())
     }
 
     /// get x
@@ -82,10 +90,12 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
         self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],& mut buffer)?;
 
-        Ok(buffer as u8)
+        Ok(buffer[0] as u8)
 
 
     }
+
+
 
 }
 
