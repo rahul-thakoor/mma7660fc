@@ -65,7 +65,8 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
     pub fn new(i2c: I2C) -> Result<Self, E> {
         let mut mma7660fc = Mma7660fc { i2c };
 
-        mma7660fc.i2c.write(ADDRESS,&[0x07,0x01])?;
+        /// set to active mode
+        mma7660fc.write_register(Register::MODE,Mode::ACTIVE.bits())?;
 
 
         Ok(mma7660fc)
@@ -74,7 +75,7 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
     /// write to register
     pub fn write_register(&mut self,reg:Register,data:u8)->Result<(), E>{
-        self.i2c.write(ADDRESS,&[reg.addr(),data])
+        self.i2c.write(ADDRESS,&[Register::MODE.addr(),data])?
     }
 
     /// set mode
