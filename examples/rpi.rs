@@ -13,7 +13,17 @@ fn main(){
 
     loop{
         let res = acc.get_x().unwrap();
-	println!("{:x}",res);
+	    println!("{:x}",res);
+        println!("{}",res);
+
+        let mut c =  res & 0x3F;
+
+        if(c > 31){
+            c -= 64;
+        }
+        println!("{}",c);
+
+        thread::sleep(Duration::from_secs(3));
     }
 
 
