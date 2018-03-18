@@ -1,7 +1,9 @@
 extern crate linux_embedded_hal as hal;
 extern crate mma7660fc;
+extern crate cast;
 use std::thread;
 use std::time::Duration;
+use cast::*;
 
 use hal::I2cdev;
 use mma7660fc::*;
@@ -13,15 +15,12 @@ fn main(){
 
     loop{
         let res = acc.get_x().unwrap();
-	    println!("{:x}",res);
         println!("{}",res);
 
         let mut c =  res & 0x3F;
 
-        if(c > 31){
-            c -= 64;
-        }
-        println!("{}",c);
+        
+        println!("{}",(c) as i8);
 
         thread::sleep(Duration::from_secs(3));
     }
