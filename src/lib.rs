@@ -1,5 +1,6 @@
 
 #![deny(warnings)]
+#![feature(pattern_parentheses)]
 #![feature(unsize)]
 #![no_std]
 
@@ -129,7 +130,7 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
         let mut results = [raw_x, raw_y, raw_z];
 
-        for ( elem) in results.iter_mut().enumerate() {
+        for (_, elem) in results.iter_mut().enumerate() {
             if *elem > 31{
                 *elem - 64;
             }
