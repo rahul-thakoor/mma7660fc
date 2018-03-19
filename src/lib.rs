@@ -109,7 +109,7 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 	let raw = u8( (buffer[0]) & 0x3F) as i8;
 	let mut result = raw;
 	if raw > 31{
-		result = raw -64;
+		result = raw - 64;
 	} 
 		
         Ok(result)
@@ -129,9 +129,9 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
         let mut results = [raw_x, raw_y, raw_z];
 
-        for i in 0..2{
-            if results[i] >31{
-                results[i] = results[i] - 64;
+        for ( elem) in results.iter_mut().enumerate() {
+            if *elem > 31{
+                *elem - 64;
             }
         }
 
