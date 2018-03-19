@@ -123,11 +123,11 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
         self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],& mut buffer)?;
 
-        let rawX = u8( (buffer[0]) & 0x3F) as i8;
-        let rawY = u8( (buffer[1]) & 0x3F) as i8;
-        let rawZ = u8( (buffer[2]) & 0x3F) as i8;
+        let raw_x = u8( (buffer[0]) & 0x3F) as i8;
+        let raw_y= u8( (buffer[1]) & 0x3F) as i8;
+        let raw_z = u8( (buffer[2]) & 0x3F) as i8;
 
-        let mut results = [rawX, rawY, rawZ];
+        let mut results = [raw_x, raw_y, raw_z];
 
         for i in 0..2{
             if results[i] >31{
