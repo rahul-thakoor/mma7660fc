@@ -1,3 +1,10 @@
+//! A platform agnostic driver to interface with the MMA7660FC 3-Axis Accelerometer via I2C
+//! This chip can be found on Seeed's Grove 3-Axis Digital Accelerometer(±1.5g)
+//!
+//! This driver was built using [`embedded-hal`] traits.
+//!
+//! [`embedded-hal`]: https://docs.rs/embedded-hal/~0.1
+//!
 
 #![deny(warnings)]
 #![feature(pattern_parentheses)]
@@ -14,6 +21,7 @@ pub const ADDRESS: u8 = 0x4c;
 
 #[allow(dead_code)]
 #[derive(Copy, Clone)]
+/// Register addresses
 pub enum  Register {
     XOUT = 0x00,
     YOUT = 0x01,
@@ -141,8 +149,6 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
             raw_z -= 64;
         }
 
-
-
         Ok(I8x3 {
             x: raw_x,
             y: raw_y,
@@ -152,8 +158,6 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
 
     }
-
-
 
 
 }
