@@ -35,6 +35,18 @@ impl Register {
     }
 }
 
+/// XYZ triple
+#[derive(Debug)]
+pub struct I8x3 {
+    /// X component
+    pub x: i8,
+    /// Y component
+    pub y: i8,
+    /// Z component
+    pub z: i8,
+}
+
+
 #[allow(dead_code)]
 #[derive(Copy, Clone)]
 pub enum Mode {
@@ -89,10 +101,36 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
         self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],& mut buffer)?;
 
-        Ok(buffer[0] as i8)
+        let raw:u8 = buffer[0];
+        // convert to 6-bits
+        let unsigned_raw = raw & 0x3F;
+        let mut result =0;
+        if unsigned_raw > 31{
+            result = unsigned_raw -64;
+        }
+
+
+        Ok(result as i8)
 
 
     }
+
+    /// get xyz
+    pub fn get_xyz(&mut self) -> Result<I8x3,E>{
+        let mut buffer: [u8; 3] = unsafe { mem::uninitialized() };
+
+        self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],& mut buffer)?;
+
+        Ok(I8x3 {
+            x: (buffer[0]) as i8,
+            y: (buffer[1]) as i8,
+            z: (buffer[2]) as i8,
+
+        })
+
+
+    }
+
 
 
 
