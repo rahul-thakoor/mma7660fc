@@ -14,14 +14,12 @@ fn main(){
     let mut  acc = Mma7660fc::new(dev).unwrap();
 
     loop{
-        let res = acc.get_x().unwrap();
-        //let xyz = acc.get_xyz().unwrap();
-       // println!("Data is");
-       // println!("{}",xyz.x);
-       // println!("{}",xyz.y);
-       // println!("{}",xyz.z);
-	println!("{}",res);
-        
+        //let res = acc.get_x().unwrap();
+        let xyz = acc.get_xyz().unwrap();
+          println!("Data is");
+          println!("{}",xyz.x);
+          println!("{}",xyz.y);
+          println!("{}",xyz.z);
 
         thread::sleep(Duration::from_secs(1));
     }

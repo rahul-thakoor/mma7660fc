@@ -76,9 +76,13 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
     pub fn new(i2c: I2C) -> Result<Self, E> {
         let mut mma7660fc = Mma7660fc { i2c };
 
-        
+        //set active mode
+
         mma7660fc.write_register(Register::MODE,Mode::ACTIVE.bits())?;
 
+        // set sampling rate to 4 samples/second active
+
+        mma7660fc.write_register(Register::SR,0x04)?;
 
         Ok(mma7660fc)
 
@@ -101,8 +105,9 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
         self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],& mut buffer)?;
 
+    // convert to 6 bits
 	let raw = u8( (buffer[0]) & 0x3F) as i8;
-	let mut result =raw; 
+	let mut result = raw;
 	if raw > 31{
 		result = raw -64;
 	} 
@@ -118,10 +123,22 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
         self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],& mut buffer)?;
 
+        let rawX = u8( (buffer[0]) & 0x3F) as i8;
+        let rawY = u8( (buffer[1]) & 0x3F) as i8;
+        let rawZ = u8( (buffer[2]) & 0x3F) as i8;
+
+        let mut results = [rawX, rawY, rawZ];
+
+        for i in 0..2{
+            if results[i] >31{
+                results[i] = results[i] - 64;
+            }
+        }
+
         Ok(I8x3 {
-            x: (buffer[0]) as i8,
-            y: (buffer[1]) as i8,
-            z: (buffer[2]) as i8,
+            x: results[0],
+            y: results[1],
+            z: results[2],
 
         })
 
