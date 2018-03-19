@@ -124,22 +124,29 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
         self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],& mut buffer)?;
 
-        let raw_x = u8( (buffer[0]) & 0x3F) as i8;
-        let raw_y= u8( (buffer[1]) & 0x3F) as i8;
-        let raw_z = u8( (buffer[2]) & 0x3F) as i8;
+        let mut raw_x = u8( (buffer[0]) & 0x3F) as i8;
+        let mut raw_y= u8( (buffer[1]) & 0x3F) as i8;
+        let mut raw_z = u8( (buffer[2]) & 0x3F) as i8;
 
-        let mut results = [raw_x, raw_y, raw_z];
-
-        for (_, elem) in results.iter_mut().enumerate() {
-            if *elem > 31{
-                *elem - 64;
-            }
+        //todo refactor duplication
+        if raw_x > 31{
+            raw_x -= 64;
         }
 
+        if raw_y > 31{
+            raw_y -= 64;
+        }
+
+        if raw_z > 31{
+            raw_z -= 64;
+        }
+
+
+
         Ok(I8x3 {
-            x: results[0],
-            y: results[1],
-            z: results[2],
+            x: raw_x,
+            y: raw_y,
+            z: raw_z,
 
         })
 
