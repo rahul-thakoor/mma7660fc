@@ -8,7 +8,7 @@ extern crate cast;
 
 use hal::blocking::i2c::{Write, WriteRead};
 use core::mem;
-
+use cast::u8;
 pub const ADDRESS: u8 = 0x4c;
 
 #[allow(dead_code)]
@@ -101,16 +101,13 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
         self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],& mut buffer)?;
 
-        let raw:u8 = buffer[0];
-        // convert to 6-bits
-        let unsigned_raw = raw & 0x3F;
-        let mut result =0;
-        if unsigned_raw > 31{
-            result = unsigned_raw -64;
-        }
-
-
-        Ok(result as i8)
+	let raw = u8( (buffer[0]) & 0x3F) as i8;
+	let mut result =raw; 
+	if raw > 31{
+		result = raw -64;
+	} 
+		
+        Ok(result)
 
 
     }
