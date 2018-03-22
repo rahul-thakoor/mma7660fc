@@ -16,10 +16,13 @@ fn main(){
     loop{
         //let res = acc.get_x().unwrap();
         let xyz = acc.get_xyz().unwrap();
-          println!("Data is");
+	  print!("X: ");
           println!("{}",xyz.x);
+	  print!("Y: ");
           println!("{}",xyz.y);
+	  print!("Z: ");
           println!("{}",xyz.z);
+	  println!("");
 
         thread::sleep(Duration::from_secs(1));
     }
