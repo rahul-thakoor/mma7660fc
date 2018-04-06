@@ -1,5 +1,5 @@
 //! A platform agnostic driver to interface with the MMA7660FC 3-Axis Accelerometer via I2C
-//! This chip can be found on Seeed's Grove 3-Axis Digital Accelerometer(±1.5g)
+//! This chip can be found on Seeed's Grove 3-Axis Digital Accelerometer with range ±1.5g (6-bit, signed)
 //!
 //! This driver was built using [`embedded-hal`] traits.
 //!
@@ -55,6 +55,7 @@ use hal::blocking::i2c::{Write, WriteRead};
 use core::mem;
 use cast::u8;
 pub const ADDRESS: u8 = 0x4c;
+pub const  SENSITIVITY: f32 = 21.33;
 
 #[allow(dead_code)]
 #[derive(Copy, Clone)]
@@ -81,7 +82,7 @@ impl Register {
     }
 }
 
-/// XYZ triple
+/// XYZ triple representing raw values
 #[derive(Debug)]
 pub struct I8x3 {
     /// X component
@@ -92,6 +93,18 @@ pub struct I8x3 {
     pub z: i8,
 }
 
+/// XYZ triple representing acceleration within range ±1.5g
+#[derive(Debug)]
+pub struct Ax3 {
+    /// X component
+    pub x: f32,
+    /// Y component
+    pub y: f32,
+    /// Z component
+    pub z: f32,
+}
+
+
 
 #[allow(dead_code)]
 #[derive(Copy, Clone)]
@@ -101,7 +114,7 @@ pub enum Mode {
 }
 
 impl Mode {
-    /// Get bits
+    // Get bits
     fn bits(&self) -> u8 {
         *self as u8
     }
@@ -145,60 +158,8 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
         self.write_register(Register::MODE,mode.bits())
     }
 
-    /// get x
-    pub fn get_x(&mut self) -> Result<i8,E>{
-        let mut buffer: [u8; 1] = unsafe { mem::uninitialized() };
 
-        self.i2c.write_read(ADDRESS,&[Register::XOUT.addr()],& mut buffer)?;
-
-    // convert to 6 bits
-	let raw = u8( (buffer[0]) & 0x3F) as i8;
-	let mut result = raw;
-	if raw > 31{
-		result = raw - 64;
-	} 
-		
-        Ok(result)
-
-
-    }
-
-    /// get y
-    pub fn get_y(&mut self) -> Result<i8,E>{
-        let mut buffer: [u8; 1] = unsafe { mem::uninitialized() };
-
-        self.i2c.write_read(ADDRESS,&[Register::YOUT.addr()],& mut buffer)?;
-
-        // convert to 6 bits
-        let raw = u8( (buffer[0]) & 0x3F) as i8;
-        let mut result = raw;
-        if raw > 31{
-            result = raw - 64;
-        }
-
-        Ok(result)
-
-
-    }
-
-    /// get z
-    pub fn get_z(&mut self) -> Result<i8,E>{
-        let mut buffer: [u8; 1] = unsafe { mem::uninitialized() };
-
-        self.i2c.write_read(ADDRESS,&[Register::ZOUT.addr()],& mut buffer)?;
-
-        // convert to 6 bits
-        let raw = u8( (buffer[0]) & 0x3F) as i8;
-        let mut result = raw;
-        if raw > 31{
-            result = raw - 64;
-        }
-
-        Ok(result)
-
-    }
-
-    /// get xyz
+    /// Returns the raw x,y and z axis from the sensor
     pub fn get_xyz(&mut self) -> Result<I8x3,E>{
         let mut buffer: [u8; 3] = unsafe { mem::uninitialized() };
 
@@ -227,6 +188,20 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
             z: raw_z,
 
         })
+
+
+    }
+
+    pub fn get_acceleration(&mut self) ->Result<Ax3,E>{
+
+        let mut raw = self.get_xyz()?;
+
+        Ok(Ax3{
+            x: raw.x / SENSITIVITY,
+            y: raw.y / SENSITIVITY,
+            z: raw.z / SENSITIVITY
+        })
+
 
 
     }
