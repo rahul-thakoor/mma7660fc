@@ -20,13 +20,13 @@ fn main(){
 
         let xyzRaw = acc.get_xyz().unwrap();
         let acceleration = acc.get_acceleration().unwrap();
-	  print!("X Raw: ");
-          println!("{}",xyzRaw.x);
-	  print!("Y Raw: ");
-          println!("{}",xyzRaw.y);
-	  print!("Z Raw: ");
-          println!("{}",xyzRaw.z);
-	  println!("");
+        print!("X Raw: ");
+        println!("{}",xyzRaw.x);
+        print!("Y Raw: ");
+        println!("{}",xyzRaw.y);
+        print!("Z Raw: ");
+        println!("{}",xyzRaw.z);
+        println!("");
 
         print!("X: ");
         println!("{}",acceleration.x);

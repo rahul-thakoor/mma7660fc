@@ -13,6 +13,7 @@ This driver was built using [`embedded-hal`] traits.
 - Read the XOUT register for value of x
 - Read registers XOUT, YOUT and ZOUT to get  6-bits output value for x, y and z
 - Set mode to active or standby
+- Get acceleration within range ±1.5g
 
 ## TODO
 
