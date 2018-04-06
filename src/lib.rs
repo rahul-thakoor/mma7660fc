@@ -153,7 +153,6 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
     }
 
     /// set mode
-
     pub fn set_mode(&mut self, mode:Mode) -> Result<(), E>{
         self.write_register(Register::MODE,mode.bits())
     }
@@ -192,6 +191,7 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
     }
 
+    /// Returns the acceleration with range ±1.5g (6-bit, signed)
     pub fn get_acceleration(&mut self) ->Result<Ax3,E>{
 
         let  raw = self.get_xyz()?;
