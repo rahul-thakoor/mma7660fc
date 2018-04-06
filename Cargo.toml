@@ -2,10 +2,17 @@
 name = "mma7660fc"
 version = "0.1.0"
 authors = ["Rahul Thakoor <rahul.thakoor@gmail.com>"]
+repository = "https://github.com/rahul-thakoor/mma7660fc"
+license = "MIT"
+description = "A platform agnostic driver to interface with the MMA7660FC 3-Axis Accelerometer via I2C"
+readme = "README.md"
+keywords = ["mma7660", "embedded-hal-driver","grove", "accelerometer", "seeed"]
+
 
 [dependencies]
 embedded-hal = "0.1.0"
-linux-embedded-hal = "0.1.1"
+
 cast="*"
 
 [dev-dependencies]
+linux-embedded-hal = "0.1.1"
