@@ -194,12 +194,12 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
     pub fn get_acceleration(&mut self) ->Result<Ax3,E>{
 
-        let mut raw = self.get_xyz()?;
+        let  raw = self.get_xyz()?;
 
         Ok(Ax3{
-            x: raw.x / SENSITIVITY,
-            y: raw.y / SENSITIVITY,
-            z: raw.z / SENSITIVITY
+            x: (raw.x as f32 )/ SENSITIVITY,
+            y: (raw.y as f32 ) / SENSITIVITY,
+            z: (raw.z as f32)/ SENSITIVITY
         })
 
 

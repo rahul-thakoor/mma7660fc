@@ -18,8 +18,8 @@ fn main(){
 
     loop{
 
-        let xyzRaw = acc.get_xyz()?;
-        let acceleration = acc.get_acceleration()?;
+        let xyzRaw = acc.get_xyz().unwrap();
+        let acceleration = acc.get_acceleration().unwrap();
 	  print!("X Raw: ");
           println!("{}",xyzRaw.x);
 	  print!("Y Raw: ");
