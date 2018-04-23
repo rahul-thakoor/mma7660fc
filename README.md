@@ -1,4 +1,4 @@
-# mma7660fc
+# [mma7660fc](https://crates.io/crates/mma7660fc)
 
 A platform agnostic driver to interface with the MMA7660FC 3-Axis Accelerometer via I2C
 
@@ -7,6 +7,9 @@ This chip can be found on Seeed's Grove 3-Axis Digital Accelerometer(±1.5g)
 This driver was built using [`embedded-hal`] traits.
 
 [`embedded-hal`]: https://docs.rs/embedded-hal/~0.1
+
+## Documentation
+ Read the detailed documentation [here](https://docs.rs/mma7660fc/)
 
 ## What works
 
@@ -23,7 +26,14 @@ This driver was built using [`embedded-hal`] traits.
 
 ## License
 
+Licensed under either of
+
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
+  http://www.apache.org/licenses/LICENSE-2.0)
+
 - MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
 
 ## Resources
 
