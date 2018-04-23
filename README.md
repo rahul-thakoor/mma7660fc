@@ -1,4 +1,4 @@
-# mma7660fc
+# [mma7660fc](https://crates.io/crates/mma7660fc)
 
 A platform agnostic driver to interface with the MMA7660FC 3-Axis Accelerometer via I2C
 
