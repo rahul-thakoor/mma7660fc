@@ -15,19 +15,19 @@
 //! use std::thread;
 //! use std::time::Duration;
 //! use cast::*;
-//! 
+//!
 //! use hal::I2cdev;
 //! use mma7660fc::*;
-//! 
+//!
 //! fn main(){
-//! 
+//!
  //!    let dev = I2cdev::new("/dev/i2c-1").unwrap();
-//! 
-//!     
+//!
+//!
 //!     let mut  acc = Mma7660fc::new(dev).unwrap();
-//! 
+//!
 //!     loop{
-//! 
+//!
 //!         let xyzRaw = acc.get_xyz().unwrap();
 //!         let acceleration = acc.get_acceleration().unwrap();
 //!         print!("X Raw: ");
@@ -37,7 +37,7 @@
 //!         print!("Z Raw: ");
 //!         println!("{}",xyzRaw.z);
 //!         println!("");
-//! 
+//!
 //!         print!("X: ");
 //!         println!("{}",acceleration.x);
 //!         print!("Y: ");
@@ -45,11 +45,11 @@
 //!         print!("Z: ");
 //!         println!("{}",acceleration.z);
 //!         println!("");
-//! 
+//!
 //!         thread::sleep(Duration::from_secs(1));
 //!     }
-//! 
-//! 
+//!
+//!
 //! }
 //!```
 //!
@@ -62,10 +62,13 @@
 #![feature(unsize)]
 #![no_std]
 
+extern crate accelerometer;
 extern crate embedded_hal as hal;
 extern crate cast;
 
+pub use accelerometer::{Accelerometer, I8x3, F32x3};
 use hal::blocking::i2c::{Write, WriteRead};
+use core::fmt::Debug;
 use core::mem;
 use cast::u8;
 pub const ADDRESS: u8 = 0x4c;
@@ -95,30 +98,6 @@ impl Register {
         *self as u8
     }
 }
-
-/// XYZ triple representing raw values
-#[derive(Debug)]
-pub struct I8x3 {
-    /// X component
-    pub x: i8,
-    /// Y component
-    pub y: i8,
-    /// Z component
-    pub z: i8,
-}
-
-/// XYZ triple representing acceleration within range ±1.5g
-#[derive(Debug)]
-pub struct Ax3 {
-    /// X component
-    pub x: f32,
-    /// Y component
-    pub y: f32,
-    /// Z component
-    pub z: f32,
-}
-
-
 
 #[allow(dead_code)]
 #[derive(Copy, Clone)]
@@ -204,23 +183,23 @@ where I2C : WriteRead<Error = E> + Write<Error = E>,
 
 
     }
+}
+
+impl<I2C, E> Accelerometer<F32x3> for Mma7660fc<I2C>
+where
+    I2C: WriteRead<Error = E> + Write<Error = E>,
+    E: Debug,
+{
+    type Error = E;
 
     /// Returns the acceleration with range ±1.5g (6-bit, signed)
-    pub fn get_acceleration(&mut self) ->Result<Ax3,E>{
+    fn acceleration(&mut self) -> Result<F32x3, E> {
+        let raw = self.get_xyz()?;
 
-        let  raw = self.get_xyz()?;
-
-        Ok(Ax3{
+        Ok(F32x3{
             x: (raw.x as f32 )/ SENSITIVITY,
             y: (raw.y as f32 ) / SENSITIVITY,
             z: (raw.z as f32)/ SENSITIVITY
         })
-
-
-
     }
-
-
 }
-
-
